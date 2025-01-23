@@ -1,63 +1,38 @@
 import TenGiphPy
 import json
+import requests
 
 # Initialize Giphy API with your token
-g = TenGiphPy.Giphy(token='*')
+g = TenGiphPy.Giphy(token='$TOKEN')
 
-# Fetch a random GIF with a specific tag
-# response = g.random(tag="Anime")
+# Fetch a random GIF with the tag "Anime"
+response = g.random(tag="Anime")['data']
 
-# Print the response in JSON format
-# print(json.dumps(response, indent=4))
+# Extract title and URL
+title = response['title']
+url = response['images']['downsized_large']['url']
 
-# url = json.dumps(response, indent=4)
-# get all the json url 
+# Print title and URL
+print("Title:", title)
+print("URL:", url)
 
+# Function to download image from URL
+def download_image(image_url, image_title):
+    # Send a GET request to the image URL
+    response = requests.get(image_url)
 
-response = g.random(tag="Anime")['data'] 
-# print(g.random(tag="Anime")['data']['images']['downsized_large']['url'])
+    # Check if the request was successful
+    if response.status_code == 200:
+        # Create a valid filename by replacing spaces with underscores and removing special characters
+        filename = f"{image_title.replace(' ', '_')}.gif"  # Save as .gif since it's a GIF
 
-# print (rest)
+        # Open a file in write-binary mode and save the image content
+        with open(filename, 'wb') as file:
+            file.write(response.content)
+        
+        print(f"Image '{filename}' downloaded successfully!")
+    else:
+        print("Failed to download image. Status code:", response.status_code)
 
-title = json.dumps(response['title'], indent=4)
-url = json.dumps(response['images']['downsized_large']['url'], indent=4)
-
-print(title)
-print(url)
-
-
-
-
-# # t = TenGiphPy.Tenor(token='APITOKEN')
-# g = TenGiphPy.Giphy(token='6jWDfEh91JLdGgem0GqBRKSzo86dcODl')
-
-# #sync
-# # print(t.random("GIFTAG"))
-
-
-
-# print(g.random(tag="Anime"))
-
-# get the list of tags
-
-# tags = [ 'anime', 'anime_smoking', 'nature', 'cars' ]
-
-# for i in tags:
-#     print(i)
-#     print(g.random(tag=i)[])
-
-
-
-
-
-
-
-
-
-
-
-# get the output of tags using loop 
-#run everything on func
-# make sure to get the json file 
-# get the key out of the json file 
-# store the key on one of the file 
+# Download the image using the extracted URL and title
+download_image(url, title)
