@@ -1,20 +1,30 @@
 import TenGiphPy
-import json
+# import json
 import requests
+import time
+import os
+from dotenv import load_dotenv
 
-# Initialize Giphy API with your token
-g = TenGiphPy.Giphy(token='$TOKEN')
+load_dotenv()
 
-# Fetch a random GIF with the tag "Anime"
-response = g.random(tag="Anime")['data']
+api_key = os.environ.get('TOKEN')
 
-# Extract title and URL
-title = response['title']
-url = response['images']['downsized_large']['url']
 
-# Print title and URL
-print("Title:", title)
-print("URL:", url)
+def call():
+    g = TenGiphPy.Giphy(token=api_key)
+
+    response = g.random(tag="Anime")['data']
+    
+
+    # Extract title and URL
+    title = response['title']
+    url = response['images']['downsized_large']['url']
+    print("Title:", title)
+    print("URL:", url)
+    
+    download_image(url, title)
+
+
 
 # Function to download image from URL
 def download_image(image_url, image_title):
@@ -34,5 +44,16 @@ def download_image(image_url, image_title):
     else:
         print("Failed to download image. Status code:", response.status_code)
 
-# Download the image using the extracted URL and title
-download_image(url, title)
+
+
+# for loop 
+# main funct with while loop 
+
+def main():
+    while True:
+        
+        call()
+        time.sleep(60)
+
+
+main()
